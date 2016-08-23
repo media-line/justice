@@ -5,13 +5,30 @@
  * @subpackage your-clean-template-3
  */
 ?>
+<?php
+    //Настройки шапки
+    $favicon = get_theme_mod('favicon', '/wp-content/themes/justice_grown/favicon.ico');
+    $logo = get_theme_mod('logo', '');
+    $slogan = get_theme_mod('slogan', '');
+    $socialText = get_theme_mod('social_text', '');
+    $google = get_theme_mod('google', '');
+    $facebook = get_theme_mod('facebook', '');
+    $twitter = get_theme_mod('twitter', '');
+    
+    //Если или нету соц сетей
+    if (($google == '') || ($facebook == '') || ($twitter == '')){
+        $isSocial = false;
+    } else {
+        $isSocial = true;
+    }
+?>
 <!DOCTYPE html>
 <html <?php language_attributes(); // вывод атрибутов языка ?>>
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); // кодировка ?>">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="shortcut icon" href="/wp-content/themes/justice_grown/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="<?php echo $favicon; ?>" type="image/x-icon" />
 
 	<?php /* Все скрипты и стили теперь подключаются в functions.php */ ?>
 
@@ -23,11 +40,46 @@
 </head>
 <body <?php body_class(); // все классы для body ?>>
 	<header>
-		<div class="container">
-			<div class="row">
-				<?php dynamic_sidebar('logo'); // выводим сайдбар, имя определено в functions.php ?>
-				<?php dynamic_sidebar('slogan'); // выводим сайдбар, имя определено в functions.php ?>
-				<div class="col-md-12">
+		<div class="uk-container">
+			<div class="clearfix">
+            
+                <?php if ($logo != ''){ ?>
+                <div class="uk-logo">
+                    <a href="/"><img src="<?php echo $logo; ?>" /></a>
+				</div>
+                <?php } ?>
+                
+                <?php if ($slogan != ''){ ?>
+                <div class="uk-slogan">
+                    <?php echo $slogan; ?>
+				</div>
+                <?php } ?>
+                
+                <?php if ($isSocial){ ?>
+                <div class="uk-social uk-social-header">
+                
+                    <?php if ($socialText != ''){ ?>
+                    <div class="uk-social-text">
+                        <?php echo $socialText; ?>
+                    </div>
+                    <?php } ?>
+                    
+                    <?php if ($google != ''){ ?>
+                        <a class="uk-social-google" href="<?php echo $google; ?>"></a>
+                    <?php } ?>
+                    
+                    <?php if ($facebook != ''){ ?>
+                        <a class="uk-social-facebook" href="<?php echo $facebook; ?>"></a>
+                    <?php } ?>
+                    
+                    <?php if ($twitter != ''){ ?>
+                        <a class="uk-social-twitter" href="<?php echo $twitter; ?>"></a>
+                    <?php } ?>
+                    
+				</div>
+                <?php } ?>
+                
+				<div class="">
 					<nav class="navbar navbar-default">
 						<div class="navbar-header">
 							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topnav" aria-expanded="false">

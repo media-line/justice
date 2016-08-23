@@ -26,26 +26,6 @@ register_sidebar(array( // регистрируем левую колонку, �
 	'after_title' => "</span>\n", //  разметка после вывода заголовка виджета
 ));
 
-register_sidebar(array( // виджет для логотипа
-	'name' => 'Logo', // Название в админке
-	'id' => "logo", // идентификатор для вызова в шаблонах
-	'description' => 'Site logo', // Описалово в админке
-	'before_widget' => '<div id="%1$s" class="widget %2$s">', // разметка до вывода каждого виджета
-	'after_widget' => "</div>\n", // разметка после вывода каждого виджета
-	'before_title' => '<span class="widgettitle">', //  разметка до вывода заголовка виджета
-	'after_title' => "</span>\n", //  разметка после вывода заголовка виджета
-));
-
-register_sidebar(array( // виджет для слогана
-	'name' => 'Slogan', // Название в админке
-	'id' => "slogan", // идентификатор для вызова в шаблонах
-	'description' => 'Site slogan', // Описалово в админке
-	'before_widget' => '<div id="%1$s" class="widget %2$s">', // разметка до вывода каждого виджета
-	'after_widget' => "</div>\n", // разметка после вывода каждого виджета
-	'before_title' => '<span class="widgettitle">', //  разметка до вывода заголовка виджета
-	'after_title' => "</span>\n", //  разметка после вывода заголовка виджета
-));
-
 if (!class_exists('clean_comments_constructor')) { // если класс уже есть в дочерней теме - нам не надо его определять
 	class clean_comments_constructor extends Walker_Comment { // класс, который собирает всю структуру комментов
 		public function start_lvl( &$output, $depth = 0, $args = array()) { // что выводим перед дочерними комментариями
@@ -179,4 +159,153 @@ if (!function_exists('content_class_by_sidebar')) { // если ф-я уже е�
 	}
 }
 
+//Добавление id записей, страниц, таксономий в админке
+if (is_admin()) {
+  // "ID" for taxonomy
+  foreach (get_taxonomies() as $taxonomy) {
+    add_action("manage_edit-${taxonomy}_columns", 'tax_add_col');
+    add_filter("manage_edit-${taxonomy}_sortable_columns", 'tax_add_col');
+    add_filter("manage_${taxonomy}_custom_column", 'tax_show_id', 10, 3);
+  }
+  add_action('admin_print_styles-edit-tags.php', 'tax_id_style');
+  function tax_add_col($columns) {return $columns + array ('tax_id' => 'ID');}
+  function tax_show_id($v, $name, $id) {return 'tax_id' === $name ? $id : $v;}
+  function tax_id_style() {print '<style>#tax_id{width:4em}</style>';}
+
+  // "ID" for posts and pages
+  add_filter('manage_posts_columns', 'posts_add_col', 5);
+  add_action('manage_posts_custom_column', 'posts_show_id', 5, 2);
+  add_filter('manage_pages_columns', 'posts_add_col', 5);
+  add_action('manage_pages_custom_column', 'posts_show_id', 5, 2);
+  add_action('admin_print_styles-edit.php', 'posts_id_style');
+  function posts_add_col($defaults) {$defaults['wps_post_id'] = __('ID'); return $defaults;}
+  function posts_show_id($column_name, $id) {if ($column_name === 'wps_post_id') echo $id;}
+  function posts_id_style() {print '<style>#wps_post_id{width:4em}</style>';}
+}
+
+//Добавление Настроек в шаблон в админке
+add_action('customize_register', function($customizer){
+    //Создание секций настроек
+    $customizer->add_section(
+        'header',
+        array(
+            'title' => 'Header',
+            'description' => 'Header',
+            'priority' => 5,
+        )
+    );
+    
+    $customizer->add_section(
+        'social',
+        array(
+            'title' => 'Social',
+            'description' => 'Social',
+            'priority' => 10,
+        )
+    );
+    
+    $customizer->add_section(
+        'footer',
+        array(
+            'title' => 'Footer',
+            'description' => 'Footer',
+            'priority' => 15,
+        )
+    );
+    
+    //Создание настроек для секций
+    //Для header
+    $customizer->add_setting('favicon');
+	$customizer->add_setting('logo');
+    $customizer->add_setting('slogan');
+    
+    //Для social
+    $customizer->add_setting('social_text');
+    $customizer->add_setting('google');
+    $customizer->add_setting('facebook');
+    $customizer->add_setting('twitter');
+    
+    //Для footer
+	$customizer->add_setting('copyrate');
+    
+    //Создание содержимого настроек
+    $customizer->add_control(
+		new WP_Customize_Image_Control(
+			$customizer,
+			'favicon',
+			array(
+				'label' => 'Favicon Image .ico',
+				'section' => 'header',
+				'settings' => 'favicon'
+			)
+		)
+	);
+    
+	$customizer->add_control(
+		new WP_Customize_Image_Control(
+			$customizer,
+			'logo',
+			array(
+				'label' => 'Logo Image',
+				'section' => 'header',
+				'settings' => 'logo'
+			)
+		)
+	);
+    
+    $customizer->add_control(
+		'slogan',
+		array(
+			'label' => 'Site slogan',
+			'section' => 'header',
+			'type' => 'text',
+		)
+	);
+    
+    $customizer->add_control(
+		'social_text',
+		array(
+			'label' => 'Social text',
+			'section' => 'social',
+			'type' => 'text',
+		)
+	);
+    
+    $customizer->add_control(
+		'google',
+		array(
+			'label' => 'Google link',
+			'section' => 'social',
+			'type' => 'text',
+		)
+	);
+    
+    $customizer->add_control(
+		'facebook',
+		array(
+			'label' => 'Facebook link',
+			'section' => 'social',
+			'type' => 'text',
+		)
+	);
+    
+    $customizer->add_control(
+		'twitter',
+		array(
+			'label' => 'Twitter link',
+			'section' => 'social',
+			'type' => 'text',
+		)
+	);
+    
+    $customizer->add_control(
+		'copyrate',
+		array(
+			'label' => 'Site copyrate',
+			'section' => 'footer',
+			'type' => 'text',
+		)
+	);
+    
+});
 ?>
