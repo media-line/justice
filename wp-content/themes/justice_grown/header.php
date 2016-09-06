@@ -15,7 +15,7 @@
     $facebook = get_theme_mod('facebook', '');
     $twitter = get_theme_mod('twitter', '');
     
-    //Если или нету соц сетей
+    //Если есть или нету соц сетей
     if (($google == '') || ($facebook == '') || ($twitter == '')){
         $isSocial = false;
     } else {
@@ -29,7 +29,9 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="shortcut icon" href="<?php echo $favicon; ?>" type="image/x-icon" />
-
+    
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+    
 	<?php /* Все скрипты и стили теперь подключаются в functions.php */ ?>
 
 	<!--[if lt IE 9]>
@@ -40,8 +42,8 @@
 </head>
 <body <?php body_class(); // все классы для body ?>>
 	<header>
-		<div class="uk-container">
-			<div class="clearfix">
+		<div class="container">
+			<div class="row">
             
                 <?php if ($logo != ''){ ?>
                 <div class="uk-logo">
@@ -64,25 +66,28 @@
                     </div>
                     <?php } ?>
                     
-                    <?php if ($google != ''){ ?>
-                        <a class="uk-social-google" href="<?php echo $google; ?>"></a>
-                    <?php } ?>
+                    <div class="uk-social-icons">
                     
-                    <?php if ($facebook != ''){ ?>
-                        <a class="uk-social-facebook" href="<?php echo $facebook; ?>"></a>
-                    <?php } ?>
+                        <?php if ($google != ''){ ?>
+                            <a class="uk-social-google icon-google-plus-symbol" href="<?php echo $google; ?>"></a>
+                        <?php } ?>
+                        
+                        <?php if ($facebook != ''){ ?>
+                            <a class="uk-social-facebook icon-facebook" href="<?php echo $facebook; ?>"></a>
+                        <?php } ?>
+                        
+                        <?php if ($twitter != ''){ ?>
+                            <a class="uk-social-twitter icon-twitter" href="<?php echo $twitter; ?>"></a>
+                        <?php } ?>
                     
-                    <?php if ($twitter != ''){ ?>
-                        <a class="uk-social-twitter" href="<?php echo $twitter; ?>"></a>
-                    <?php } ?>
-                    
+                    </div>
 				</div>
                 <?php } ?>
                 
-				<div class="">
-					<nav class="navbar navbar-default">
+				<div class="uk-menu-main">
+					<nav class="navbar uk-navbar">
 						<div class="navbar-header">
-							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topnav" aria-expanded="false">
+							<button type="button" class="navbar-toggle uk-navbar-toggle collapsed" data-toggle="collapse" data-target="#topnav" aria-expanded="false">
 								<span class="sr-only">Меню</span>
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
@@ -95,7 +100,7 @@
 								'container'=> false, // обертка списка, тут не нужна
 						  		'menu_id' => 'top-nav-ul', // id для ul
 						  		'items_wrap' => '<ul id="%1$s" class="nav navbar-nav %2$s">%3$s</ul>',
-								'menu_class' => 'top-menu', // класс для ul, первые 2 обязательны
+								'menu_class' => 'uk-menu-main-list', // класс для ul, первые 2 обязательны
 						  		'walker' => new bootstrap_menu(true) // верхнее меню выводится по разметке бутсрапа, см класс в functions.php, если по наведению субменю не раскрывать то передайте false		  		
 					  			);
 								wp_nav_menu($args); // выводим верхнее меню

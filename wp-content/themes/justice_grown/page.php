@@ -5,8 +5,8 @@
  * @subpackage your-clean-template-3
  */
 get_header(); // подключаем header.php ?>
-<section>
-	<div class="container">
+<div class="uk-main">
+	<div class="uk-main-container container">
 		<div class="row">
 			<div class="<?php content_class_by_sidebar(); // функция подставит класс в зависимости от того есть ли сайдбар, лежит в functions.php ?>">
 				<?php if ( have_posts() ) while ( have_posts() ) : the_post(); // старт цикла ?>
@@ -19,5 +19,5 @@ get_header(); // подключаем header.php ?>
 			<?php get_sidebar(); // подключаем sidebar.php ?>
 		</div>
 	</div>
-</section>
+</div>
 <?php get_footer(); // подключаем footer.php ?>
